@@ -27,21 +27,19 @@ Rules:
 Be supportive and student-friendly.
 """
 
-def chat_with_counselor(user_input):
-    context = f"""
-    Quiz Result Recommendation: {st.session_state.recommendation}
-    Student Message: {user_input}
-    """
+def chat_with_counselor(user_prompt):
     response = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="llama-3.1-8b-instant",   # ✅ supported Groq model
         messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": context},
+            {"role": "system", "content": "You are an expert career counselor. Guide the user based on their quiz answers."},
+            {"role": "user", "content": user_prompt}
         ],
-        temperature=0.7,
         max_tokens=300,
+        temperature=0.7
     )
+    
     return response.choices[0].message.content
+
 
 def predict_careers():
     # Build a summary of quiz answers
@@ -244,3 +242,4 @@ if st.session_state.quiz_submitted:
     if clear_click:
         st.session_state.chat_history = []
         st.rerun()
+
